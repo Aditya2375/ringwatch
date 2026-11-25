@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Ringwatch: finding money mule rings in payment graphs</title>
+<meta name="description" content="A pass-through detector for money mule rings, running in your browser on synthetic payments with planted rings. Scored honestly on an easy and a hard set.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%230a1220'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%23ffb020' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top"><a class="mark" href="#top">Ringwatch</a><nav aria-label="Sections"><a href="#run">Detector</a><a href="#score">Scorecard</a><a href="#how">Method</a></nav></header>
+<main id="top">
+<section class="hero">
+<p class="tag">GRAPH FRAUD DETECTION · SYNTHETIC DATA</p>
+<h1>Mule rings move money fast<br>and keep none of it.</h1>
+<p class="lede">Victims pay a collector, the collector splits it across layers, a cash-out account sends it on. Ringwatch looks for accounts that forward almost everything they receive within hours, in a short burst, then joins them into rings. It runs in your browser. The payments are made up, and the rings are planted so it can be scored.</p>
+<div class="seg" role="group" aria-label="Dataset"><button id="bEasy" class="on" aria-pressed="true">Easy set</button><button id="bHard" aria-pressed="false">Hard set</button></div>
+<p id="setinfo" class="fine"></p>
+</section>
+<section id="run" class="block" aria-live="polite">
+<div class="grid2"><div id="stats" class="stats"></div><div class="knobs" id="knobs"></div></div>
+<h2>Rings found</h2>
+<div id="rings" class="rings"></div>
+</section>
+<section id="score" class="block"><h2>Scorecard</h2><p class="fine">Measured against the planted labels. The detector never sees labels.</p><div class="tablewrap"><table id="score-t"></table></div><ul id="notes" class="notes"></ul></section>
+<section id="how" class="block"><h2>Method</h2>
+<ol class="steps">
+<li><b>Match.</b> For each account, every outgoing payment is matched first-in-first-out to money that arrived in the previous 48 hours. The matched share of total inflow is the forward ratio.</li>
+<li><b>Burst.</b> Count the days that carry 80% of the account's money movement. Mules finish in a few days. Merchants and normal accounts spread over the month.</li>
+<li><b>Flag.</b> Inflow of at least 300, forward ratio of 0.6 or more, 3 days or fewer.</li>
+<li><b>Join.</b> Flagged accounts linked by a direct payment form a ring. The senders into a ring are shown as likely victims.</li>
+</ol>
+<h2>Limits</h2>
+<ul class="limits">
+<li>The data is synthetic and I wrote both the generator and the detector. The easy set is a sanity check, not evidence. The hard set adds long delays, big fees, camouflage spending and more merchants, and the detector misses a third of the mules there.</li>
+<li>Real systems also use device, identity, and account-age signals that a payment graph does not have.</li>
+<li>Thresholds were set once on the easy set and not changed for the hard set. Moving them trades recall for false alarms.</li>
+<li>Flagged does not mean guilty. A real flag needs a human to review it.</li>
+</ul>
+<p class="fine">Code MIT. Fonts: Instrument Serif and IBM Plex Mono, SIL OFL.</p></section>
+</main>
+<script src="js/detect.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
